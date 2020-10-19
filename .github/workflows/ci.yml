@@ -1,0 +1,24 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    name: Functional test on PHP ${{ matrix.php }}
+
+    strategy:
+      matrix:
+        php: [7.2, 7.3, 7.4]
+
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+      - uses: actions/checkout@v1
+      - name: Composer install
+        run: cd dev/tests/functional/; composer install --no-interaction;
+      - name: Installing Magento
+        run: ./dev/github/setup.sh
+      - name: PHPUnit
+        run: ./dev/github/functional.sh
